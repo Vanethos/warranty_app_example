@@ -9,7 +9,7 @@ class WarrantyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(title: 'Flutter Demo Home Page'),
+      home: LoginPage(title: 'Warranty App'),
     );
   }
 }

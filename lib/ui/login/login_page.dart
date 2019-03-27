@@ -15,7 +15,9 @@ class _LoginPageState extends State<LoginPage> {
       // to be the same color as the image background
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(widget.title),
+        backgroundColor: Colors.white,
+        title: Center(child: Text(widget.title, style: TextStyle(color: Colors.black),)),
+        elevation: 0,
       ),
       body: Center(
         child: Column(
@@ -43,11 +45,21 @@ class _LoginPageState extends State<LoginPage> {
                         color: Theme.of(context).primaryColor,
                         // the action that occur on button press
                         onPressed: () => print(""),
-                        child: Text(
-                          "Login".toUpperCase(),
-                          // adds text style to the Text Widget
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                        child: Row(
+                          // centers the row horizontally
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          // centers the row vertically
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(Icons.vpn_key, color: Colors.white,),
+                            SizedBox(width: 8),
+                            Text(
+                              "Login".toUpperCase(),
+                              // adds text style to the Text Widget
+                              style: TextStyle(
+                                  color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
                       ),
                     ),
