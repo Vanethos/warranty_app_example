@@ -26,19 +26,30 @@ class _LoginPageState extends State<LoginPage> {
             // Uses all the remaining space in the Scaffold
             Expanded(
               // aligns the button to the bottom of the expanded space
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                // A widget that "avoids operating system interfaces" eg:
-                // iPhone X home button area
-                child: SafeArea(
-                  // using a container to add bottom margin
-                  child: Container(
-                    margin: EdgeInsets.only(bottom: 8),
-                    child: RaisedButton(
+              child: Container(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  // A widget that "avoids operating system interfaces" eg:
+                  // iPhone X home button area
+                  child: SafeArea(
+                    // using a container to add bottom margin
+                    child: Container(
+                      // extends the width of the container to be as long as the
+                      // parent
+                      width: double.infinity,
+                      margin: EdgeInsets.only(bottom: 8, left: 20, right: 20),
+                      child: RaisedButton(
+                        padding: EdgeInsets.all(12),
                         color: Theme.of(context).primaryColor,
                         // the action that occur on button press
                         onPressed: () => print(""),
-                        child: Text("Login"),
+                        child: Text(
+                          "Login".toUpperCase(),
+                          // adds text style to the Text Widget
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ),
                   ),
                 ),
