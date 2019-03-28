@@ -81,8 +81,91 @@ void showAddDialog(BuildContext context) {
   showDialog(
       context: context,
       builder: (context) => AlertDialog(
-            title: Text("title"),
-            content: Text("A dialog"),
+            title: Row(
+              children: <Widget>[
+                Icon(Icons.add_circle_outline),
+                SizedBox(
+                  width: 8,
+                ),
+                Text("Add a Warranty"),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Name',
+                    suffixIcon: Icon(Icons.account_box),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        borderSide: BorderSide(color: Colors.black)),
+                  ),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Company',
+                    suffixIcon: Icon(Icons.home),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        borderSide: BorderSide(color: Colors.black)),
+                  ),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Flexible(
+                      flex: 2,
+                      child: TextField(
+                        maxLength: 2,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          hintText: 'DD',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderSide: BorderSide(color: Colors.black)),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8,),
+                    Flexible(
+                      flex: 2,
+                      child: TextField(
+                        maxLength: 2,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          hintText: 'MM',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderSide: BorderSide(color: Colors.black)),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8,),
+                    Flexible(
+                      flex: 3,
+                      child: TextField(
+                        maxLength: 4,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          hintText: 'YYYY',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderSide: BorderSide(color: Colors.black)),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
             actions: <Widget>[
               FlatButton(
                 child: const Text("CLOSE"),
