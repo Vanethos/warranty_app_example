@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:warranty_app_example/ui/navigation.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
@@ -44,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                         padding: EdgeInsets.all(12),
                         color: Theme.of(context).primaryColor,
                         // the action that occur on button press
-                        onPressed: () => print(""),
+                        onPressed: () => navigateToHomePage(context),
                         child: Row(
                           // centers the row horizontally
                           mainAxisAlignment: MainAxisAlignment.center,
