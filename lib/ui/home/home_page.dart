@@ -35,6 +35,27 @@ class _WarrantyItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(warranty.name);
+    return Container(
+      margin: EdgeInsets.only(left: 8, right: 8, top: 8),
+      child: Card(
+        child: Container(
+          margin: EdgeInsets.all(8),
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.folder_open, color: Colors.grey,),
+              SizedBox(width: 8,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text("Name: ${warranty.name}", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Company: ${warranty.company}"),
+                  Text("Name: ${DateTime.fromMillisecondsSinceEpoch(warranty.date*1000)}"),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
