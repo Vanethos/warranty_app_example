@@ -20,6 +20,11 @@ class _HomePageState extends State<HomePage> {
       body: ListView(
         children: mockData.map((warranty) => _WarrantyItem(warranty)).toList(),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showAddDialog(context),
+        child: Icon(Icons.add),
+        backgroundColor: Colors.pinkAccent,
+      ),
     );
   }
 }
@@ -67,7 +72,30 @@ List<Warranty> generateWarranties() {
   var warranties = <Warranty>[];
   for (var i = 1; i < 100; i++) {
     warranties.add(Warranty("Warranty $i", "Company $i",
-        (DateTime.now().millisecondsSinceEpoch - i * 1000)));
+        (DateTime.now().millisecondsSinceEpoch - i * 1000 * 1000)));
   }
   return warranties;
+}
+
+void showAddDialog(BuildContext context) {
+  showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text("title"),
+            content: Text("A dialog"),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text("CLOSE"),
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+              ),
+              FlatButton(
+                child: const Text("ADD"),
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+              ),
+            ],
+          ));
 }
