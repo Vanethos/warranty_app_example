@@ -17,7 +17,11 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Center(child: Text(widget.title, style: TextStyle(color: Colors.black),)),
+        title: Center(
+            child: Text(
+          widget.title,
+          style: TextStyle(color: Colors.black),
+        )),
         elevation: 0,
       ),
       body: Center(
@@ -52,13 +56,17 @@ class _LoginPageState extends State<LoginPage> {
                           // centers the row vertically
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            Icon(Icons.vpn_key, color: Colors.white,),
+                            Icon(
+                              Icons.vpn_key,
+                              color: Colors.white,
+                            ),
                             SizedBox(width: 8),
                             Text(
                               "Login".toUpperCase(),
                               // adds text style to the Text Widget
                               style: TextStyle(
-                                  color: Colors.white, fontWeight: FontWeight.bold),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),

@@ -38,14 +38,21 @@ class _WarrantyItem extends StatelessWidget {
           margin: EdgeInsets.all(8),
           child: Row(
             children: <Widget>[
-              Icon(Icons.folder_open, color: Colors.grey,),
-              SizedBox(width: 8,),
+              Icon(
+                Icons.folder_open,
+                color: Colors.grey,
+              ),
+              SizedBox(
+                width: 8,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text("Name: ${warranty.name}", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Name: ${warranty.name}",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   Text("Company: ${warranty.company}"),
-                  Text("Name: ${DateTime.fromMillisecondsSinceEpoch(warranty.date)}"),
+                  Text(
+                      "Name: ${DateTime.fromMillisecondsSinceEpoch(warranty.date)}"),
                 ],
               )
             ],
@@ -59,7 +66,8 @@ class _WarrantyItem extends StatelessWidget {
 List<Warranty> generateWarranties() {
   var warranties = <Warranty>[];
   for (var i = 1; i < 100; i++) {
-    warranties.add(Warranty("Warranty $i", "Company $i", (DateTime.now().millisecondsSinceEpoch - i * 1000)));
+    warranties.add(Warranty("Warranty $i", "Company $i",
+        (DateTime.now().millisecondsSinceEpoch - i * 1000)));
   }
   return warranties;
 }
