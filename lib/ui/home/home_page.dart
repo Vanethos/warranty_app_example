@@ -22,8 +22,19 @@ class _HomePageState extends State<HomePage> {
         title: Text("Your Warranties"),
       ),
       body: ListView(
-        children: mockData.map((warranty) => Text(warranty.name)).toList(),
+        children: mockData.map((warranty) => _WarrantyItem(warranty)).toList(),
       ),
     );
+  }
+}
+
+class _WarrantyItem extends StatelessWidget {
+  Warranty warranty;
+
+  _WarrantyItem(this.warranty);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(warranty.name);
   }
 }
