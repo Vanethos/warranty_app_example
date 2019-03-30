@@ -21,7 +21,14 @@ class _HomePageState extends State<HomePage> {
         children: mockData.map((warranty) => _WarrantyItem(warranty)).toList(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showAddDialog(context),
+        onPressed: () async {
+          var warranty = await showAddDialog(context);
+          if (warranty != null) {
+            setState(() {
+              mockData.insert(0, warranty);
+            });
+          }
+        },
         child: Icon(Icons.add),
         backgroundColor: Colors.pinkAccent,
       ),
@@ -77,7 +84,6 @@ List<Warranty> generateWarranties() {
   return warranties;
 }
 
-
 String validateTextFields(String value) {
   if (value == null || value == "") {
     return "Text Fields cannot be null";
@@ -115,13 +121,13 @@ String validateYearFields(String value) {
   return null;
 }
 
-void showAddDialog(BuildContext context) {
+Future<Warranty> showAddDialog(BuildContext context) {
   // Create keys to be able to reference each form field
   var nameFormkey = GlobalKey<FormFieldState>();
   var companyFormkey = GlobalKey<FormFieldState>();
   var monthFormkey = GlobalKey<FormFieldState>();
   var yearFormkey = GlobalKey<FormFieldState>();
-  showDialog(
+  return showDialog(
       context: context,
       builder: (context) => AlertDialog(
             title: Row(
@@ -211,7 +217,7 @@ void showAddDialog(BuildContext context) {
               FlatButton(
                 child: const Text("CLOSE"),
                 onPressed: () {
-                  Navigator.pop(context, true);
+                  Navigator.pop(context, null);
                 },
               ),
               FlatButton(
@@ -219,11 +225,23 @@ void showAddDialog(BuildContext context) {
                 onPressed: () {
                   // validate all keys
                   var yearFormValidation = yearFormkey.currentState.validate();
-                  var monthFormValidation = monthFormkey.currentState.validate();
-                  var companyFormValidation = companyFormkey.currentState.validate();
+                  var monthFormValidation =
+                      monthFormkey.currentState.validate();
+                  var companyFormValidation =
+                      companyFormkey.currentState.validate();
                   var nameFormValidation = nameFormkey.currentState.validate();
-                  if (yearFormValidation && monthFormValidation && companyFormValidation && nameFormValidation) {
-                    Navigator.pop(context, false);
+                  if (yearFormValidation &&
+                      monthFormValidation &&
+                      companyFormValidation &&
+                      nameFormValidation) {
+                    Navigator.pop(
+                        context,
+                        Warranty(
+                            nameFormkey.currentState.value,
+                            companyFormkey.currentState.value,
+                            DateTime(int.parse(yearFormkey.currentState.value),
+                                    int.parse(monthFormkey.currentState.value))
+                                .millisecondsSinceEpoch));
                   }
                 },
               ),
