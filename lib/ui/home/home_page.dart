@@ -77,7 +77,50 @@ List<Warranty> generateWarranties() {
   return warranties;
 }
 
+
+String validateTextFields(String value) {
+  if (value == null || value == "") {
+    return "Text Fields cannot be null";
+  }
+  return null;
+}
+
+String validateMonthFields(String value) {
+  if (value == null || value == "") {
+    return "Text must not be null";
+  }
+  try {
+    var month = int.parse(value);
+    if (month > 12 || month < 1) {
+      return "Invalid month";
+    }
+  } catch (e) {
+    return "Text Fields must be numbers";
+  }
+  return null;
+}
+
+String validateYearFields(String value) {
+  if (value == null || value == "") {
+    return "Text must not be null";
+  }
+  try {
+    var year = int.parse(value);
+    if (year < DateTime.now().year) {
+      return "Invalid year";
+    }
+  } catch (e) {
+    return "Text Fields must be numbers";
+  }
+  return null;
+}
+
 void showAddDialog(BuildContext context) {
+  // Create keys to be able to reference each form field
+  var nameFormkey = GlobalKey<FormFieldState>();
+  var companyFormkey = GlobalKey<FormFieldState>();
+  var monthFormkey = GlobalKey<FormFieldState>();
+  var yearFormkey = GlobalKey<FormFieldState>();
   showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -93,7 +136,9 @@ void showAddDialog(BuildContext context) {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                TextField(
+                TextFormField(
+                  key: nameFormkey,
+                  validator: validateTextFields,
                   decoration: InputDecoration(
                     hintText: 'Name',
                     suffixIcon: Icon(Icons.account_box),
@@ -105,7 +150,9 @@ void showAddDialog(BuildContext context) {
                 SizedBox(
                   height: 8,
                 ),
-                TextField(
+                TextFormField(
+                  key: companyFormkey,
+                  validator: validateTextFields,
                   decoration: InputDecoration(
                     hintText: 'Company',
                     suffixIcon: Icon(Icons.home),
@@ -123,41 +170,35 @@ void showAddDialog(BuildContext context) {
                   children: <Widget>[
                     Flexible(
                       flex: 2,
-                      child: TextField(
-                        maxLength: 2,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: 'DD',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                              borderSide: BorderSide(color: Colors.black)),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 8,),
-                    Flexible(
-                      flex: 2,
-                      child: TextField(
+                      child: TextFormField(
+                        key: monthFormkey,
+                        validator: validateMonthFields,
                         maxLength: 2,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           hintText: 'MM',
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
                               borderSide: BorderSide(color: Colors.black)),
                         ),
                       ),
                     ),
-                    SizedBox(width: 8,),
+                    SizedBox(
+                      width: 8,
+                    ),
                     Flexible(
                       flex: 3,
-                      child: TextField(
+                      child: TextFormField(
+                        key: yearFormkey,
+                        validator: validateYearFields,
                         maxLength: 4,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           hintText: 'YYYY',
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
                               borderSide: BorderSide(color: Colors.black)),
                         ),
                       ),
@@ -176,7 +217,14 @@ void showAddDialog(BuildContext context) {
               FlatButton(
                 child: const Text("ADD"),
                 onPressed: () {
-                  Navigator.pop(context, false);
+                  // validate all keys
+                  var yearFormValidation = yearFormkey.currentState.validate();
+                  var monthFormValidation = monthFormkey.currentState.validate();
+                  var companyFormValidation = companyFormkey.currentState.validate();
+                  var nameFormValidation = nameFormkey.currentState.validate();
+                  if (yearFormValidation && monthFormValidation && companyFormValidation && nameFormValidation) {
+                    Navigator.pop(context, false);
+                  }
                 },
               ),
             ],
