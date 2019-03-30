@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:warranty_app_example/data/models/warranty.dart';
+import 'package:warranty_app_example/ui/navigation.dart';
 
 var mockData = generateWarranties();
 
@@ -16,6 +17,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Your Warranties"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () => showExitDialog(context),
+          )
+        ],
       ),
       body: ListView(
         children: mockData.map((warranty) => _WarrantyItem(warranty)).toList(),
@@ -119,6 +126,30 @@ String validateYearFields(String value) {
     return "Text Fields must be numbers";
   }
   return null;
+}
+
+void showExitDialog(BuildContext context) {
+  // Create keys to be able to reference each form field
+  showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Logout?"),
+        actions: <Widget>[
+          FlatButton(
+            child: const Text("No"),
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+          ),
+          FlatButton(
+            child: const Text("Yes"),
+            onPressed: () {
+              Navigator.pop(context, null);
+              navigateToLoginPage(context);
+            },
+          ),
+        ],
+      ));
 }
 
 Future<Warranty> showAddDialog(BuildContext context) {
