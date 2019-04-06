@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:warranty_app_example/ui/navigation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: [
+    'email',
+  ],
+);
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
@@ -49,7 +58,9 @@ class _LoginPageState extends State<LoginPage> {
                         padding: EdgeInsets.all(12),
                         color: Theme.of(context).primaryColor,
                         // the action that occur on button press
-                        onPressed: () => navigateToHomePage(context),
+                        onPressed: () => _handleSignIn()
+                            .then((FirebaseUser user) => navigateToHomePage(context))
+                            .catchError((e) => print(e)),
                         child: Row(
                           // centers the row horizontally
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -81,4 +92,23 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+  Future<FirebaseUser> _handleSignIn() async {
+    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+    print("Ask for credentials");
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    print("Credentials Asked");
+
+    final FirebaseUser user = await _auth.signInWithCredential(credential);
+    print("signed in " + user.displayName);
+    return user;
+  }
+
 }
