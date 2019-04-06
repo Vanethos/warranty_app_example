@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:warranty_app_example/data/models/warranty.dart';
 import 'package:warranty_app_example/ui/navigation.dart';
@@ -5,6 +6,10 @@ import 'package:warranty_app_example/ui/navigation.dart';
 var mockData = generateWarranties();
 
 class HomePage extends StatefulWidget {
+  FirebaseUser user;
+
+  HomePage({this.user, Key key}) : super(key : key);
+
   @override
   State<HomePage> createState() {
     return _HomePageState();
@@ -14,6 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    print(widget.user.metadata.toString());
     return Scaffold(
       appBar: AppBar(
         title: Text("Your Warranties"),

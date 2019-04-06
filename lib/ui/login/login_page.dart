@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                         color: Theme.of(context).primaryColor,
                         // the action that occur on button press
                         onPressed: () => _handleSignIn()
-                            .then((FirebaseUser user) => navigateToHomePage(context))
+                            .then((FirebaseUser user) => navigateToHomePage(context, user))
                             .catchError((e) => print(e)),
                         child: Row(
                           // centers the row horizontally
@@ -96,15 +96,11 @@ class _LoginPageState extends State<LoginPage> {
   Future<FirebaseUser> _handleSignIn() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-    print("Ask for credentials");
-
+    
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
-
-    print("Credentials Asked");
 
     final FirebaseUser user = await _auth.signInWithCredential(credential);
     print("signed in " + user.displayName);
