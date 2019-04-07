@@ -1,16 +1,13 @@
-# warranty_app_example
+# Warranty App
 
-Warranty App
+## Prerequisites
 
-## Getting Started
+To be able to build this project, you will need to configure a new Firebase Project. You can either change the `bundleId` of the iOS and Android app or use the default one: `com.vanethos.warrantyexampleapp`
 
-This project is a starting point for a Flutter application.
+After that, you must also do the following:
+- Place your debug SHA-1 in the Firebase console for the Android app (see https://developers.google.com/android/guides/client-auth , the default passowrd is `android`)
+- Activate the "People API" in the Google Cloud console for the project that you created on the Firebase Console
+- Place the `google-services.json` file in `android/app` and add to the XCode Project the file `GoogleService-Info.plist`
+- Create a `keys.xcconfig` file in `ios/Runner` with the field `GOOGLE_KEY` with the value `REVERSED_CLIENT_ID` from the `GoogleService-Info.plist` file
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
