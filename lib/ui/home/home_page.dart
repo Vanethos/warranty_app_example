@@ -107,7 +107,7 @@ class _WarrantyItem extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   Text("Company: ${warranty.company}"),
                   Text(
-                      "Name: ${DateTime.fromMillisecondsSinceEpoch(warranty.date)}"),
+                      "Date: ${DateTime.fromMillisecondsSinceEpoch(warranty.date)}"),
                 ],
               )
             ],
