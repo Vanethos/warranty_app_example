@@ -1,10 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:warranty_app_example/data/models/warranty.dart';
 import 'package:warranty_app_example/ui/navigation.dart';
 
 var mockData = generateWarranties();
 
+const warrantyCollection = "warranties";
+
 class HomePage extends StatefulWidget {
+  FirebaseUser user;
+
+  HomePage({this.user, Key key}) : super(key: key);
+
   @override
   State<HomePage> createState() {
     return _HomePageState();
@@ -24,22 +32,50 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: ListView(
-        children: mockData.map((warranty) => _WarrantyItem(warranty)).toList(),
-      ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: Firestore.instance
+              .collection(warrantyCollection)
+              .where('user', isEqualTo: widget.user.email)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return new Text('Loading...');
+              default:
+                if (snapshot.data.documents != null && snapshot.data.documents.isNotEmpty) {
+                  return new ListView(
+                    children: snapshot.data.documents
+                        .map((document) =>
+                        _WarrantyItem(Warranty.fromFirestore(document)))
+                        .toList(),
+                  );
+                }
+                return Text('No warranties added');
+            }
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           var warranty = await showAddDialog(context);
+          print("wattanty: $warranty");
           if (warranty != null) {
-            setState(() {
-              mockData.insert(0, warranty);
-            });
+            print("Adding new entry to firebase");
+            await _addNewEntry(warranty);
           }
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.pinkAccent,
       ),
     );
+  }
+
+  Future<void> _addNewEntry(Warranty warranty) async {
+    return Firestore.instance.collection(warrantyCollection).document().setData({
+      'user': '${widget.user.email}',
+      'name': '${warranty.name}',
+      'company': '${warranty.company}',
+      'date': warranty.date
+    }).catchError((error) => print(error)).then((_) => print("done!"));
   }
 }
 
@@ -133,26 +169,27 @@ void showExitDialog(BuildContext context) {
   showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Logout?"),
-        actions: <Widget>[
-          FlatButton(
-            child: const Text("No"),
-            onPressed: () {
-              Navigator.pop(context, true);
-            },
-          ),
-          FlatButton(
-            child: const Text("Yes"),
-            onPressed: () {
-              Navigator.pop(context, null);
-              navigateToLoginPage(context);
-            },
-          ),
-        ],
-      ));
+            title: Text("Logout?"),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text("No"),
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+              ),
+              FlatButton(
+                child: const Text("Yes"),
+                onPressed: () {
+                  Navigator.pop(context, null);
+                  navigateToLoginPage(context);
+                },
+              ),
+            ],
+          ));
 }
 
 Future<Warranty> showAddDialog(BuildContext context) {
+  print("we show a dialog");
   // Create keys to be able to reference each form field
   var nameFormkey = GlobalKey<FormFieldState>();
   var companyFormkey = GlobalKey<FormFieldState>();
@@ -170,79 +207,81 @@ Future<Warranty> showAddDialog(BuildContext context) {
                 Text("Add a Warranty"),
               ],
             ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TextFormField(
-                  key: nameFormkey,
-                  validator: validateTextFields,
-                  decoration: InputDecoration(
-                    hintText: 'Name',
-                    suffixIcon: Icon(Icons.account_box),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        borderSide: BorderSide(color: Colors.black)),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TextFormField(
+                    key: nameFormkey,
+                    validator: validateTextFields,
+                    decoration: InputDecoration(
+                      hintText: 'Name',
+                      suffixIcon: Icon(Icons.account_box),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                          borderSide: BorderSide(color: Colors.black)),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                TextFormField(
-                  key: companyFormkey,
-                  validator: validateTextFields,
-                  decoration: InputDecoration(
-                    hintText: 'Company',
-                    suffixIcon: Icon(Icons.home),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        borderSide: BorderSide(color: Colors.black)),
+                  SizedBox(
+                    height: 8,
                   ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Flexible(
-                      flex: 2,
-                      child: TextFormField(
-                        key: monthFormkey,
-                        validator: validateMonthFields,
-                        maxLength: 2,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: 'MM',
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                              borderSide: BorderSide(color: Colors.black)),
+                  TextFormField(
+                    key: companyFormkey,
+                    validator: validateTextFields,
+                    decoration: InputDecoration(
+                      hintText: 'Company',
+                      suffixIcon: Icon(Icons.home),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                          borderSide: BorderSide(color: Colors.black)),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Flexible(
+                        flex: 2,
+                        child: TextFormField(
+                          key: monthFormkey,
+                          validator: validateMonthFields,
+                          maxLength: 2,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            hintText: 'MM',
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0)),
+                                borderSide: BorderSide(color: Colors.black)),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Flexible(
-                      flex: 3,
-                      child: TextFormField(
-                        key: yearFormkey,
-                        validator: validateYearFields,
-                        maxLength: 4,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: 'YYYY',
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                              borderSide: BorderSide(color: Colors.black)),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Flexible(
+                        flex: 3,
+                        child: TextFormField(
+                          key: yearFormkey,
+                          validator: validateYearFields,
+                          maxLength: 4,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            hintText: 'YYYY',
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0)),
+                                borderSide: BorderSide(color: Colors.black)),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                )
-              ],
+                    ],
+                  )
+                ],
+              ),
             ),
             actions: <Widget>[
               FlatButton(
