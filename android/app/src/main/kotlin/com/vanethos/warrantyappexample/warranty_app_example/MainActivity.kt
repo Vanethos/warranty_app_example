@@ -1,4 +1,4 @@
-package com.vanethos.warranty_app_example
+package com.vanethos.warrantyappexample.warranty_app_example
 
 import android.os.Bundle
 

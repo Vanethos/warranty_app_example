@@ -76,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                             Text(
                               "Login".toUpperCase(),
                               // adds text style to the Text Widget
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
@@ -95,7 +96,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<FirebaseUser> _handleSignIn() async {
-    print("Signing in");
+    // Check if the user is logged in
+    var currentUser = await _auth.currentUser();
+    if (await _auth.currentUser() != null) {
+      // if she is, then return the current user
+      return currentUser;
+    }
+    // Else, go through the login procedure
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
@@ -104,12 +111,8 @@ class _LoginPageState extends State<LoginPage> {
       idToken: googleAuth.idToken,
     );
 
-    print("got credentials");
-
-
-    final FirebaseUser user = await _auth.signInWithCredential(credential);
-    print("signed in " + user.displayName);
-    return user;
+    final AuthResult authResult = await _auth.signInWithCredential(credential);
+    return authResult.user;
   }
 
 }
